@@ -2,6 +2,7 @@ require 'open-uri'
 require 'json'
 
 class GamesController < ApplicationController
+
   def new
     @letters = (0...10).map { ('a'..'z').to_a[rand(26)] }
   end
@@ -9,6 +10,7 @@ class GamesController < ApplicationController
   def score
     @word = params[:answer]
     @letters = params[:letters]
+    @score = 0
     response = open("https://wagon-dictionary.herokuapp.com/#{@word}")
     json = JSON.parse(response.read)
     if @word.chars.all? { |letter| @word.count(letter) <= @letters.count(letter) } == false
@@ -17,6 +19,7 @@ class GamesController < ApplicationController
       @result = "Sorry but #{@word.upcase} does not seem to be a valid English word..."
     else
       @result = "Congratulation ! #{@word.upcase} is a valid English word !"
+      @score = @word.length
     end
   end
 end
